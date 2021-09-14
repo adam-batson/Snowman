@@ -10,9 +10,9 @@ namespace Snowman
     {   // Snowman is a UI component, so instantiates one for use in this class.
         readonly Snowman sm = new();
 
-        public void ShowText(string text) => Console.WriteLine(text);
+        public static void ShowText(string text) => Console.WriteLine(text);
 
-        public char GetLetter(string text)
+        public static char GetLetter(string text)
         {
             ShowText(text);
             var output = Console.ReadLine();
@@ -22,15 +22,15 @@ namespace Snowman
             }
             else
             {
-                return '~';
+                return ' ';
             }
         }
 
-        public void ShowGuessed(string guessed) => Console.WriteLine($"Guessed letters: {guessed}");
+        public static void ShowGuessed(string guessed) => Console.WriteLine($"Guessed letters: {guessed}");
 
         public void ShowSnowman(int tries) => ShowText("\n" + sm.SnowmanParts[tries] + "\n");
 
-        private void ShowTries(int tries) => ShowText($"Tries remaining: {6 - tries}\n");
+        private static void ShowTries(int tries) => ShowText($"Tries remaining: {6 - tries}\n");
 
         public void UpdateScreen(string blanks, int tries, string guessed)
         {

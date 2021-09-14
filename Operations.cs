@@ -23,12 +23,11 @@ namespace Snowman
             currentWord = words.NewWord();
             blanks = new char[currentWord.Length];
             triesUsed = 0;
-
         }
 
         public void Start()
         {
-            ui.ShowText("Welcome! Time to play Snowman!\n\nYou will guess a single letter " + 
+            UI.ShowText("Welcome! Time to play Snowman!\n\nYou will guess a single letter " + 
                         "at a time.\nIf it is correct, it will appear on screen.\n" +
                         "If not, it will appear in your guessed letters and the snowman " +
                         "will melt a little bit.\nIf you guess incorrectly 6 times, the " + 
@@ -43,22 +42,22 @@ namespace Snowman
         {
             CheckBlanks();
             ui.UpdateScreen(blanksAsString.ToString(), triesUsed, guessedAsString.ToString());
-            guess = ui.GetLetter("Guess a letter: ");
+            guess = UI.GetLetter("Guess a letter: ");
             CheckGuess(guess);
             CheckWin();
         }
 
-        private void CheckGuess(char guess)
+        public void CheckGuess(char guess)
         {
             if (!Char.IsLetter(guess)) // Verifies the guess is a letter and gets a new guess if it isn't.
             {
-                if(guess == '~')
+                if(guess == ' ')
                 {
-                    ui.ShowText("You entered nothing. Try again.\n");
+                    UI.ShowText("You entered nothing. Try again.\n");
                 }
                 else
                 {
-                    ui.ShowText($"{guess} isn't a letter. Try again.\n");
+                    UI.ShowText($"{guess} isn't a letter. Try again.\n");
                 }
             }           
             else
@@ -68,11 +67,11 @@ namespace Snowman
 
             if (guessed.Contains(guess)) // Validates guess wasn't already guessed.
             {
-                ui.ShowText("You already guessed that letter. Try again.\n");
+                UI.ShowText("You already guessed that letter. Try again.\n");
             }
             else if (currentWord.Contains(guess)) // Checks if guess is in the word.
             {
-                ui.ShowText($"Yes! {guess} is in the word!\n");
+                UI.ShowText($"Yes! {guess} is in the word!\n");
                 guessed.Add(guess);
                 guessedAsString.Append(guess);
                 guessedAsString.Append(' ');
@@ -80,7 +79,7 @@ namespace Snowman
             }
             else
             {
-                ui.ShowText($"Sorry, {guess} is not in the word.\n");
+                UI.ShowText($"Sorry, {guess} is not in the word.\n");
                 triesUsed++;
                 guessed.Add(guess);
                 guessedAsString.Append(guess);
@@ -88,7 +87,7 @@ namespace Snowman
             }
         }
 
-        private void CheckBlanks() // Adds guessed letters to the blanks, eventually becoming a copy of the goal word.
+        public void CheckBlanks() // Adds guessed letters to the blanks, eventually becoming a copy of the goal word.
         {
             var length = currentWord.Length;
             blanksAsString.Clear();
@@ -106,19 +105,19 @@ namespace Snowman
             }
         }
 
-        private void CheckWin() // Checks if the game is won or lost and either keeps the game running or asks user if they want to play again.
+        public void CheckWin() // Checks if the game is won or lost and either keeps the game running or asks user if they want to play again.
         {
             //ui.UpdateScreen(blanksAsString.ToString(), triesUsed, guessedAsString.ToString());
 
             if (triesUsed == 6) // Lose condition - player used up all tries.
             {
                 ui.ShowSnowman(triesUsed);
-                ui.ShowText("The snowman melted away and you lost this round!\n");
+                UI.ShowText("The snowman melted away and you lost this round!\n");
                 PlayAgain();
             }
             else if(blanksAsString.ToString() == currentWord) // Win condition - player matched the word.
             {
-                ui.ShowText($"Congratulations! You guessed the word {currentWord} with {6 - triesUsed} tries left!\nYou saved the snowman and won this round!\n");
+                UI.ShowText($"Congratulations! You guessed the word {currentWord} with {6 - triesUsed} tries left!\nYou saved the snowman and won this round!\n");
                 PlayAgain();
             }
             else // Player didn't win or lose, game keeps going.
@@ -129,7 +128,7 @@ namespace Snowman
 
         private void PlayAgain()
         {
-            char keepPlaying = ui.GetLetter("Do you want to play again? (Y or N)");
+            char keepPlaying = UI.GetLetter("Do you want to play again? (Y or N)");
             
             if(keepPlaying == 'Y' || keepPlaying == 'y')
             {
@@ -138,12 +137,12 @@ namespace Snowman
             }
             else if (keepPlaying == 'N' || keepPlaying == 'n')
             {
-                ui.ShowText("Thanks for playing! Hope to see you again soon!");
+                UI.ShowText("Thanks for playing! Hope to see you again soon!");
                 Program.playAgain = false;
             }
             else
             {
-                ui.ShowText("That's not a valid choice.\n");
+                UI.ShowText("That's not a valid choice.\n");
                 PlayAgain();
             }
         }
@@ -156,7 +155,6 @@ namespace Snowman
             blanksAsString.Clear();
             guessedAsString.Clear();
             triesUsed = 0;
-
         }
     }
 }
