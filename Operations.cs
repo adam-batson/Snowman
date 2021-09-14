@@ -107,12 +107,10 @@ namespace Snowman
 
         public void CheckWin() // Checks if the game is won or lost and either keeps the game running or asks user if they want to play again.
         {
-            //ui.UpdateScreen(blanksAsString.ToString(), triesUsed, guessedAsString.ToString());
-
             if (triesUsed == 6) // Lose condition - player used up all tries.
             {
                 ui.ShowSnowman(triesUsed);
-                UI.ShowText("The snowman melted away and you lost this round!\n");
+                UI.ShowText($"The snowman melted away and you lost this round! The word was {currentWord}\n");
                 PlayAgain();
             }
             else if(blanksAsString.ToString() == currentWord) // Win condition - player matched the word.
@@ -126,7 +124,7 @@ namespace Snowman
             }
         }
 
-        private void PlayAgain()
+        private void PlayAgain() // Asks user if they want to keep playing and reruns Game or ends based on reply.
         {
             char keepPlaying = UI.GetLetter("Do you want to play again? (Y or N)");
             
