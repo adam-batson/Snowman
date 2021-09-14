@@ -6,17 +6,16 @@ using System.Threading;
 
 namespace Snowman
 {
-    public class Operations
+    public class Operations // Handles running the game.
     {
         public Words words = new();
         public List<char> guessed = new(); // Tracks letters that have been guessed.
         public int triesUsed;
-        private string currentWord; // Stores the randomly chosen word.
+        public string currentWord; // Stores the randomly chosen word.
         private char guess;
         public char[] blanks; // Used to display chars that haven't been guessed yet.
-        private UI ui = new();
-        private StringBuilder blanksAsString = new();
-        private StringBuilder guessedAsString = new();
+        public StringBuilder blanksAsString = new(); // Allows showing and updating unguessed letters/blanks.
+        public StringBuilder guessedAsString = new(); // Allows display of guessed letters.
 
         public Operations()
         {
@@ -25,7 +24,7 @@ namespace Snowman
             triesUsed = 0;
         }
 
-        public void Start()
+        public void Start() // Displays welcome message and rules of the game. Waits for input before moving on.
         {
             UI.ShowText("Welcome! Time to play Snowman!\n\nYou will guess a single letter " + 
                         "at a time.\nIf it is correct, it will appear on screen.\n" +
@@ -40,91 +39,14 @@ namespace Snowman
 
         public void Game() // This plays the game. There is no loop because any conditions that would end the game
         {
-            CheckBlanks();
-            ui.UpdateScreen(blanksAsString.ToString(), triesUsed, guessedAsString.ToString());
+            Checks.CheckBlanks();
+            UI.UpdateScreen(blanksAsString.ToString(), triesUsed, guessedAsString.ToString());
             guess = UI.GetLetter("Guess a letter: ");
-            CheckGuess(guess);
-            CheckWin();
+            Checks.CheckGuess(guess);
+            Checks.CheckWin();
         }
 
-        public void CheckGuess(char guess)
-        {
-            if (!Char.IsLetter(guess)) // Verifies the guess is a letter and gets a new guess if it isn't.
-            {
-                if(guess == ' ')
-                {
-                    UI.ShowText("You entered nothing. Try again.\n");
-                }
-                else
-                {
-                    UI.ShowText($"{guess} isn't a letter. Try again.\n");
-                }
-            }           
-            else
-            {
-                guess = Char.ToUpper(guess); // Words are stored in caps, so this converts the guess to a capital letter.
-            }
-
-            if (guessed.Contains(guess)) // Validates guess wasn't already guessed.
-            {
-                UI.ShowText("You already guessed that letter. Try again.\n");
-            }
-            else if (currentWord.Contains(guess)) // Checks if guess is in the word.
-            {
-                UI.ShowText($"Yes! {guess} is in the word!\n");
-                guessed.Add(guess);
-                guessedAsString.Append(guess);
-                guessedAsString.Append(' ');
-                CheckBlanks(); // Updates revealed letters.
-            }
-            else
-            {
-                UI.ShowText($"Sorry, {guess} is not in the word.\n");
-                triesUsed++;
-                guessed.Add(guess);
-                guessedAsString.Append(guess);
-                guessedAsString.Append(' ');
-            }
-        }
-
-        public void CheckBlanks() // Adds guessed letters to the blanks, eventually becoming a copy of the goal word.
-        {
-            var length = currentWord.Length;
-            blanksAsString.Clear();
-
-            for (int i = 0; i < length; i++)
-            {
-                if (guessed.Contains(currentWord[i])) // If player guessed the letter of the goal word we're looking at now, change the blank to that letter.
-                {
-                    blanksAsString.Append(currentWord[i]);
-                }
-                else // Fill in blanks for unknown letters.
-                {
-                    blanksAsString.Append('*');
-                }
-            }
-        }
-
-        public void CheckWin() // Checks if the game is won or lost and either keeps the game running or asks user if they want to play again.
-        {
-            if (triesUsed == 6) // Lose condition - player used up all tries.
-            {
-                ui.ShowSnowman(triesUsed);
-                UI.ShowText($"The snowman melted away and you lost this round! The word was {currentWord}\n");
-                PlayAgain();
-            }
-            else if(blanksAsString.ToString() == currentWord) // Win condition - player matched the word.
-            {
-                UI.ShowText($"Congratulations! You guessed the word {currentWord} with {6 - triesUsed} tries left!\nYou saved the snowman and won this round!\n");
-                PlayAgain();
-            }
-            else // Player didn't win or lose, game keeps going.
-            {
-                Game();
-            }
-        }
-
-        private void PlayAgain() // Asks user if they want to keep playing and reruns Game or ends based on reply.
+        public void PlayAgain() // Asks user if they want to keep playing and reruns Game or ends based on reply.
         {
             char keepPlaying = UI.GetLetter("Do you want to play again? (Y or N)");
             
@@ -145,7 +67,7 @@ namespace Snowman
             }
         }
 
-        private void ResetGame()
+        private void ResetGame() // Gets new random word, empties blanks, guessed, the StringBuilders, and resets triesUsed so a new round can begin.
         {
             currentWord = words.NewWord();
             blanks = new char[currentWord.Length];

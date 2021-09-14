@@ -5,12 +5,14 @@ namespace Snowman
     class Program
     {
         public static bool playAgain = true;
-        static readonly Operations ops = new();
+        public static Operations ops = new();
+
         static void Main(string[] args)
         {
-            ops.Start();
 
-            while (playAgain)
+            ops.Start(); // Only shows welcome message once on game start, rather than every round.
+
+            while (playAgain) // Repeats game until the user decides they are done.
             {
                 ops.Game();
             }
